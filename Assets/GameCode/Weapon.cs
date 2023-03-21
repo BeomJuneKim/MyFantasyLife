@@ -6,12 +6,12 @@ public class Weapon : MonoBehaviour
 {
     public enum WeaponType
     {
-        CloseUpAttack,
-        StandOffAttack
+        meleeAttack,                                    // 근접 공격
+        rangeAttack                                     // 원거리 공격
     };
     public WeaponType weaponType;
     public int damage;                                  // 무기 데미지
-    public float attackSpeed;                           // 공격 속도
+    public float attackDelay;                           // 공격 딜레이
     public BoxCollider AttackArea;                      // 공격 범위
     public TrailRenderer trailRenderer;                 // 공격 효과
 
@@ -27,7 +27,7 @@ public class Weapon : MonoBehaviour
 
     public void UseWeapon()
     {
-        if (weaponType == WeaponType.CloseUpAttack)
+        if (weaponType == WeaponType.meleeAttack)
         {
             StopCoroutine(Swing());
             StartCoroutine(Swing());
@@ -48,4 +48,5 @@ public class Weapon : MonoBehaviour
         trailRenderer.enabled = false;
     }
 
+    // 원거리 공격 코루틴
 }

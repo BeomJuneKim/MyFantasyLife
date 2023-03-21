@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody playerRigidbody;
     Animator animator;
     GameObject nearObj;
-    Weapon weapon;
+    public Weapon equipWeapon;
 
     [Header("PlayerState")]
     public int PlayerHP;
@@ -49,6 +49,8 @@ public class PlayerController : MonoBehaviour
         PlayerTurn();
         PlayerJump();
         PlayerDash();
+        PlayerAttack();
+        Swap();
     }
 
     // 키 입력 함수
@@ -58,10 +60,12 @@ public class PlayerController : MonoBehaviour
         VerticalAxis = Input.GetAxisRaw("Vertical");
 
         playerWalk = Input.GetButton("Walk");                       // Left Ctrl
-        playerJump = Input.GetButton("Jump");                       // Space Bar
-        playerDash = Input.GetButton("Dash");                       // Left Shift
+        playerJump = Input.GetButtonDown("Jump");                       // Space Bar
+        playerDash = Input.GetButtonDown("Dash");                       // Left Shift
+        AttackDown = Input.GetButtonDown("Fire1");                       // Left Mouse
     }
 
+    #region Player 이동 관련
     // 플레이어 이동 함수
     void PlayerMove()
     {
@@ -107,7 +111,7 @@ public class PlayerController : MonoBehaviour
     void PlayerDash()
     {
         //if (playerJump && isJump == false && moveVec != Vector3.zero && isDash == false)
-        if(playerDash && isJump == false && moveVec != Vector3.zero && isDash == false)
+        if (playerDash && isJump == false && moveVec != Vector3.zero && isDash == false)
         {
             dashVec = moveVec;
             Speed *= 2;
@@ -121,13 +125,48 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // PlayerDash에서 사용 중
     void PlayerDashEnd()
     {
         // 원래 속도로 돌아오게함
         Speed *= 0.5f;
         isDash = false;
     }
+    #endregion
 
+
+    // 무기 변경
+    void Swap()
+    {
+
+        //if (equipWeapon != null)
+        //    //equipWeapon.gameObject.SetActive(false);
+    }
+
+    // 플레이어 공격
+    void PlayerAttack()
+    {
+        //장비한 무기가 없으면
+        if (equipWeapon == null)
+        {
+            Debug.Log(equipWeapon);
+            return;
+        }
+
+            AttackDelay += Time.deltaTime;
+        isAttackReady = equipWeapon.attackDelay < AttackDelay;
+
+        // 추후 무기 변경 넣을 꺼면, && isSwap
+
+        if (AttackDown && isAttackReady && !isDash)
+        {
+            equipWeapon.UseWeapon();
+            animator.SetTrigger("doAttack");       // 추후 Animator에서 수정?
+            Debug.Log("**");
+            //animator.SetInteger("doAttack", 0);
+            AttackDelay = 0;                        // 딜레이 초기화
+        }
+    }
 
     void OnCollisionEnter(Collision collision)
     {

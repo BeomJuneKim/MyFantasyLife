@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Floor
   - Monster
+  - MeleeWeapon
+  - RageWeapon
   layers:
   - Default
   - TransparentFX
